@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>foryou — Pour Sarah</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: #05020a;
+            color: #ffe6f2;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Fond galaxie de rêve ultra-immersif */
+        .galaxy-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            background: radial-gradient(circle at 50% 30%, #350d3d 0%, #15031f 60%, #05010a 100%);
+        }
+
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.6); }
+            50% { opacity: 1; transform: scale(1.8); box-shadow: 0 0 12px #ff758c; }
+        }
+
+        /* Conteneur principal somptueux */
+        .game-container {
+            position: relative;
+            z-index: 10;
+            width: 92%;
+            max-width: 580px;
+            background: rgba(22, 10, 34, 0.9);
+            border: 2px solid rgba(255, 117, 140, 0.5);
+            border-radius: 30px;
+            padding: 45px 35px;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(255, 117, 140, 0.35), inset 0 0 30px rgba(255, 117, 140, 0.15);
+            backdrop-filter: blur(20px);
+            min-height: 520px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .stage {
+            display: none;
+            width: 100%;
+            animation: smoothFade 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .stage.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes smoothFade {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        h1, h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: #ffb3d9;
+            text-shadow: 0 0 20px rgba(255, 179, 217, 0.6);
+            letter-spacing: 0.5px;
+        }
+
+        p {
+            font-size: 1.05rem;
+            margin-bottom: 25px;
+            color: #fce8f3;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        /* Boutons de luxe */
+        .btn {
+            background: linear-gradient(135deg, #ff758c, #ff9eb5);
+            color: #fff;
+            border: none;
+            padding: 15px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 25px rgba(255, 117, 140, 0.45);
+            margin-top: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px) scale(1.04);
+            box-shadow: 0 10px 30px rgba(255, 117, 140, 0.7);
+            background: linear-gradient(135deg, #ff5c77, #ff829b);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* --- ÉLÉMENT CLÉ : Vrais cercles de chargement fluides (fin des barres bizarres) --- */
+        .loader-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 25px 0;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 117, 140, 0.2);
+            border-top: 4px solid #ff758c;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-status-text {
+            font-size: 1rem;
+            color: #ffb3d9;
+            font-style: italic;
+            min-height: 30px;
+        }
+
+        /* Étape 1 : Le portail élégant */
+        .portal-area {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            border: 1px solid rgba(255, 117, 140, 0.3);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            box-shadow: inset 0 0 15px rgba(255, 117, 140, 0.05);
+        }
+
+        .floating-orb {
+            font-size: 3.5rem;
+            cursor: pointer;
+            animation: floatOrb 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px #ff758c);
+            transition: transform 0.3s;
+        }
+
+        .floating-orb:hover {
+            transform: scale(1.35);
+        }
+
+        @keyframes floatOrb {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(5deg); }
+        }
+
+        /* Étape 2 : Choix raffinés */
+        .choices-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .choice-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 117, 140, 0.25);
+            color: #ffe6f2;
+            padding: 14px 20px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+            text-align: left;
+            font-weight: 400;
+        }
+
+        .choice-card:hover {
+            background: rgba(255, 117, 140, 0.2);
+            border-color: #ff758c;
+            transform: translateX(6px);
+            box-shadow: 0 5px 15px rgba(255, 117, 140, 0.2);
+        }
+
+        /* Étape 3 : Carte céleste de Sarah */
+        .constellation-box {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .sparkle-node {
+            position: absolute;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+            animation: pulseNode 2s infinite;
+        }
+
+        .sparkle-node:hover {
+            transform: scale(1.5);
+        }
+
+        @keyframes pulseNode {
+            0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 5px #fff); }
+            50% { opacity: 1; filter: drop-shadow(0 0 20px #ff758c); }
+        }
+
+        /* Étape 4 : Indicateurs de pourcentage fluides (style propre et moderne) */
+        .metrics-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .metric-row {
+            text-align: left;
+        }
+
+        .metric-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+            color: #ffb3d9;
+            font-weight: 500;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 117, 140, 0.2);
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff758c, #ff9eb5);
+            border-radius: 10px;
+            transition: width 1.5s cubic-bezier(0.1, 1, 0.1, 1);
+        }
+
+        /* Coffre final somptueux */
+        .magnificent-chest {
+            font-size: 5.5rem;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 0 35px rgba(255, 117, 140, 0.8));
+            animation: floatOrb 2.5s ease-in-out infinite;
+        }
+
+        .magnificent-chest:hover {
+            transform: scale(1.18) rotate(5deg);
+        }
+
+        /* Pluie magique finale */
+        .magic-rain {
+            position: absolute;
+            top: -10vh;
+            color: #ff758c;
+            font-size: 1.6rem;
+            user-select: none;
+            pointer-events: none;
+            animation: fallMagic linear forwards;
+            z-index: 5;
+        }
+
+        @keyframes fallMagic {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fond galaxie féerique -->
+    <div class="galaxy-bg" id="galaxyBg"></div>
+
+    <div class="game-container" id="gameContainer">
+
+        <!-- ÉCRAN 0 : Chargement fluide avec beau spinner -->
+        <div class="stage active" id="stage-0">
+            <h1 style="color: #ff758c; font-size: 2.5rem; margin-bottom: 5px;">foryou</h1>
+            <p style="font-size: 1rem; color: #ff99c8; margin-bottom: 20px;">Pensé et créé rien que pour Sarah</p>
+            
+            <div class="loader-wrapper">
+                <div class="spinner"></div>
+                <div class="loading-status-text" id="loadingStatus">Connexion à l'univers secret...</div>
+            </div>
+
+            <button class="btn" id="startBtn" style="display:none;" onclick="nextStage(1)">Commencer l'expérience</button>
+        </div>
+
+        <!-- NIVEAU 1 : Le Portail des Années Internet -->
+        <div class="stage" id="stage-1">
+            <h2>Niveau 1</h2>
+            <p>Même si on est sur internet et qu'on ne s'est jamais vus... notre lien traverse l'écran depuis toutes ces années. Touche cette source de lumière.</p>
+            <div class="portal-area">
+                <div class="floating-orb" onclick="unlockPortal()">✨</div>
+            </div>
+            <div id="msg1" style="font-size: 0.95rem; color: #ff99c8; min-height: 25px;"></div>
+        </div>
+
+        <!-- NIVEAU 2 : Le Choix de l'Élixir -->
+        <div class="stage" id="stage-2">
+            <h2>Niveau 2</h2>
+            <p>Comment décrirais-tu Sarah au quotidien ?</p>
+            <div class="choices-grid">
+                <div class="choice-card" onclick="validateQuiz()">Elle est incroyablement trop chou</div>
+                <div class="choice-card" onclick="validateQuiz()">Elle est magnifique, sublime, trop belle</div>
+                <div class="choice-card" onclick="validateQuiz()">Elle illumine chacune de mes journées</div>
+                <div class="choice-card" onclick="validateQuiz()">Absolument tout cela à la fois 💖</div>
+            </div>
+            <div id="msg2" style="font-size: 0.95rem; color: #ff99c8; min-height: 25px; margin-top: 10px;"></div>
+        </div>
+
+        <!-- NIVEAU 3 : Constellation de la Beauté -->
+        <div class="stage" id="stage-3">
+            <h2>Niveau 3</h2>
+            <p>Sur cette carte du ciel, clique sur l'étoile la plus éclatante pour révéler sa véritable nature.</p>
+            <div class="constellation-box">
+                <span class="sparkle-node" style="top: 25%; left: 20%;">⭐</span>
+                <span class="sparkle-node" style="top: 65%; left: 30%;">🌟</span>
+                <span class="sparkle-node" style="top: 40%; left: 75%;" onclick="revealConstellation()">💎</span>
+                <span class="sparkle-node" style="top: 75%; left: 80%;">✨</span>
+            </div>
+            <div id="msg3" style="font-size: 0.95rem; color: #ff99c8; min-height: 25px;"></div>
+        </div>
+
+        <!-- NIVEAU 4 : Scan des Statistiques Propres et Fluides -->
+        <div class="stage" id="stage-4">
+            <h2>Niveau 4</h2>
+            <p>Analyse des données pour Sarah...</p>
+            
+            <div class="metrics-container">
+                <div class="metric-row">
+                    <div class="metric-info">
+                        <span>Beauté & Sublimité</span>
+                        <span>100%</span>
+                    </div>
+                    <div class="progress-track"><div class="progress-fill" id="bar1"></div></div>
+                </div>
+                <div class="metric-row">
+                    <div class="metric-info">
+                        <span>Côté "Trop Chou"</span>
+                        <span>100%</span>
+                    </div>
+                    <div class="progress-track"><div class="progress-fill" id="bar2"></div></div>
+                </div>
+                <div class="metric-row">
+                    <div class="metric-info">
+                        <span>Importance (Elle est tout pour moi)</span>
+                        <span>MAX∞</span>
+                    </div>
+                    <div class="progress-track"><div class="progress-fill" id="bar3"></div></div>
+                </div>
+            </div>
+
+            <button class="btn" id="statsBtn" style="display:none;" onclick="nextStage(5)">Ouvrir le coffre final</button>
+        </div>
+
+        <!-- BOSS FINAL : Le Trésor -->
+        <div class="stage" id="stage-5">
+            <h2>Dernière Étape</h2>
+            <p>Un coffre magique scellé par tant d'années d'affection.<br>Touche-le pour l'ouvrir. (<span id="clicksLeft">3</span>)</p>
+            <div class="magnificent-chest" id="magChest" onclick="hitChest()">🎁</div>
+        </div>
+
+        <!-- FIN : La Déclaration Ultime -->
+        <div class="stage" id="stage-6">
+            <h2 style="color: #ff758c; font-size: 2rem;">Dearest Sarah,</h2>
+            <p style="font-size: 1rem; text-align: left; line-height: 1.8; margin-bottom: 25px;">
+                Même si on est amis sur internet et qu'on ne s'est jamais vus... tu es tout pour moi depuis des années.<br><br>
+                Je trouve que tu es <strong style="color: #fff;">magnifique, sublime, trop belle</strong>, et je t'aime beaucoup, vraiment beaucoup.<br><br>
+                Ce site s'appelle <strong style="color: #ff99c8;">foryou</strong> parce que tout ceci a été pensé, conçu et codé rien que pour toi, Sarah.<br><br>
+                <span style="color: #ff99c8; font-style: italic; display: block; text-align: right; margin-top: 15px;">— Ton ami qui t'adore ❤️</span>
+            </p>
+            <button class="btn" onclick="location.reload()" style="font-size: 0.95rem; padding: 12px 24px;">Recommencer l'expérience</button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Génération dynamique de la galaxie d'étoiles ---
+        const galaxy = document.getElementById('galaxyBg');
+        for (let i = 0; i < 80; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.width = `${Math.random() * 3 + 1}px`;
+            star.style.height = star.style.width;
+            star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+            galaxy.appendChild(star);
+        }
+
+        // --- Séquence de chargement fluide et propre ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const statusTexts = [
+                "Connexion à l'univers secret...",
+                "Recherche du profil de Sarah...",
+                "Synchronisation des émotions...",
+                "Prêt !"
+            ];
+            const statusEl = document.getElementById('loadingStatus');
+            const startBtn = document.getElementById('startBtn');
+            let index = 0;
+
+            const interval = setInterval(() => {
+                index++;
+                if (index < statusTexts.length) {
+                    statusEl.innerText = statusTexts[index];
+                } else {
+                    clearInterval(interval);
+                    // Disparition douce du spinner pour laisser place au bouton propre
+                    document.querySelector('.spinner').style.display = 'none';
+                    statusEl.innerText = "✨ Tout est prêt pour toi, Sarah.";
+                    statusEl.style.color = "#ff758c";
+                    startBtn.style.display = 'inline-block';
+                }
+            }, 700);
+        });
+
+        // --- Gestion de la navigation fluide ---
+        function nextStage(stageNumber) {
+            document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+            document.getElementById(`stage-${stageNumber}`).classList.add('active');
+
+            if (stageNumber === 4) {
+                // Déclenchement fluide des barres de progression modernes
+                setTimeout(() => {
+                    document.getElementById('bar1').style.width = '100%';
+                    document.getElementById('bar2').style.width = '100%';
+                    document.getElementById('bar3').style.width = '100%';
+                }, 200);
+
+                setTimeout(() => {
+                    document.getElementById('statsBtn').style.display = 'inline-block';
+                }, 1600);
+            }
+        }
+
+        // --- Niveau 1 ---
+        function unlockPortal() {
+            document.getElementById('msg1').innerText = "✨ Lien magique validé avec succès.";
+            setTimeout(() => {
+                nextStage(2);
+            }, 1200);
+        }
+
+        // --- Niveau 2 ---
+        function validateQuiz() {
+            document.getElementById('msg2').innerText = "C'est tellement vrai ! Passage au niveau suivant.";
+            setTimeout(() => {
+                nextStage(3);
+            }, 1000);
+        }
+
+        // --- Niveau 3 ---
+        function revealConstellation() {
+            document.getElementById('msg3').innerText = "💎 Étoile unique trouvée : Sarah, tout simplement sublime.";
+            setTimeout(() => {
+                nextStage(4);
+            }, 1500);
+        }
+
+        // --- Boss Final : Le Coffre interactif ---
+        let clicksRemaining = 3;
+        function hitChest() {
+            clicksRemaining--;
+            if (clicksRemaining > 0) {
+                document.getElementById('clicksLeft').innerText = clicksRemaining;
+                const container = document.getElementById('gameContainer');
+                container.style.transform = `translate(${Math.random()*8-4}px, ${Math.random()*8-4}px)`;
+                setTimeout(() => container.style.transform = 'translate(0, 0)', 150);
+            } else {
+                document.getElementById('magChest').innerText = "💖";
+                startMagicRain();
+                setTimeout(() => {
+                    nextStage(6);
+                }, 1000);
+            }
+        }
+
+        // --- Pluie magique finale ---
+        function startMagicRain() {
+            setInterval(() => {
+                const element = document.createElement('div');
+                element.classList.add('magic-rain');
+                element.innerHTML = Math.random() > 0.5 ? '❤️' : '✨';
+                element.style.left = `${Math.random() * 100}vw`;
+                element.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                document.body.appendChild(element);
+
+                setTimeout(() => {
+                    element.remove();
+                }, 5000);
+            }, 150);
+        }
+    </script>
+</body>
+</html>
